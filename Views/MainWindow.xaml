@@ -146,7 +146,7 @@
             <Canvas Height="172" Width="264" Canvas.Left="620" Canvas.Top="252">
                 <Viewbox Stretch="Fill" Width="200" Height="50" Canvas.Left="6" Canvas.Top="80"/>
                 <Canvas Canvas.Left="8" Canvas.Top="83" Width="230" Height="52">
-                    <WhiteGold:WG_Slider Value="3"  Minimum="1" Maximum="5" IsSnapToTickEnabled="True" Width="234" Height="42" Canvas.Left="-3" Canvas.Top="2"/>
+                    <WhiteGold:WG_Slider Value="3"  Minimum="1" Maximum="5" IsSnapToTickEnabled="True" Width="234" Height="42" Canvas.Left="-3"/>
                     <Ellipse  Canvas.Left="16.5" Canvas.Top="37" Width="3" Height="3" Fill="Gray" />
                     <TextBlock Style="{DynamicResource TextBlockStyle2}" Text="20ms" FontSize="12" Canvas.Top="39" Canvas.Left="6"/>
                     <Ellipse  Canvas.Left="64.5" Canvas.Top="37" Width="3" Height="3" Fill="Gray" />
@@ -159,17 +159,17 @@
                     <TextBlock Style="{DynamicResource TextBlockStyle2}" Text="100ms" FontSize="12" Canvas.Top="39" Canvas.Left="196"/>
 
                 </Canvas>
-                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle4}" Text="SerialPort" Canvas.Left="5" Canvas.Top="9" />
-                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle3}" Text="{Binding PortStatus,FallbackValue=OFF}" Canvas.Left="131" Canvas.Top="9" />
+                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle4}" Text="SerialPort" Canvas.Left="5" Canvas.Top="8" />
+                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle3}" Text="{Binding PortStatus,FallbackValue=OFF}" Canvas.Left="131" Canvas.Top="8" />
 
-                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle4}" Text="AutoCmd" Canvas.Top="51" Canvas.Left="6" />
-                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle3}" Text="{Binding AutoCommandStatus,FallbackValue=OFF}" Canvas.Left="131" Canvas.Top="52" />
-                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle3}" Text="{Binding ModeSwitchStatus,FallbackValue=MASTER}" Canvas.Left="84" Canvas.Top="135" />
+                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle4}" Text="AutoCmd" Canvas.Top="46" Canvas.Left="6" />
+                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle3}" Text="{Binding AutoCommandStatus,FallbackValue=OFF}" Canvas.Left="131" Canvas.Top="47" />
+                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle3}" Text="{Binding ModeSwitchStatus,FallbackValue=MASTER}" Canvas.Left="84" Canvas.Top="140" />
 
-                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle4}" Text="Mode" Canvas.Top="135" Canvas.Left="6" />
-                <MyControl:UcCheckBox x:Name="MyCheckBox_PortSwitch" IsChecked="{Binding IsPortOpen}" Canvas.Left="197" Canvas.Top="9" Height="30" Width="50" RenderTransformOrigin="0.5,0.5" />
-                <MyControl:UcCheckBox IsEnabled="{Binding IsPortOpen}" IsChecked="{Binding IsAutoCommand, UpdateSourceTrigger=PropertyChanged}"  Width="50" Height="30" Canvas.Left="198" Canvas.Top="51" RenderTransformOrigin="0.5,0.5" />
-                <MyControl:UcCheckBox IsChecked="{Binding IsMasterModel,UpdateSourceTrigger=PropertyChanged}"  Width="50" Height="30" Canvas.Left="198" Canvas.Top="135" RenderTransformOrigin="0.5,0.5" />
+                <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle4}" Text="Mode" Canvas.Top="140" Canvas.Left="6" />
+                <MyControl:UcCheckBox x:Name="MyCheckBox_PortSwitch" IsChecked="{Binding IsPortOpen}" Canvas.Left="197" Canvas.Top="8" Height="30" Width="50" RenderTransformOrigin="0.5,0.5" />
+                <MyControl:UcCheckBox IsEnabled="{Binding IsPortOpen}" IsChecked="{Binding IsAutoCommand, UpdateSourceTrigger=PropertyChanged}"  Width="50" Height="30" Canvas.Left="198" Canvas.Top="46" RenderTransformOrigin="0.5,0.5" />
+                <MyControl:UcCheckBox IsChecked="{Binding IsMasterModel,UpdateSourceTrigger=PropertyChanged}"  Width="50" Height="30" Canvas.Left="198" Canvas.Top="140" RenderTransformOrigin="0.5,0.5" />
             </Canvas>
             <Canvas Height="43" Width="870" Canvas.Left="14" Canvas.Top="562" >
                 <WhiteGold:WG_RoundCheckBox IsChecked="{Binding IsPingJoin}" Width="30" Height="30" Canvas.Left="6" Canvas.Top="5" />
