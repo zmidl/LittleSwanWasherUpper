@@ -144,9 +144,8 @@
     <Viewbox Width="auto" Height="auto" Stretch="Fill">
         <Canvas Height="620" Width="970">
             <Canvas Height="172" Width="264" Canvas.Left="620" Canvas.Top="252">
-                <Viewbox Stretch="Fill" Width="200" Height="50" Canvas.Left="6" Canvas.Top="80"/>
-                <Canvas Canvas.Left="8" Canvas.Top="83" Width="230" Height="52">
-                    <WhiteGold:WG_Slider Value="3"  Minimum="1" Maximum="5" IsSnapToTickEnabled="True" Width="234" Height="42" Canvas.Left="-3"/>
+                <Canvas Canvas.Left="7" Canvas.Top="83" Width="250" Height="52">
+                    <WhiteGold:WG_Slider x:Name="Slider1" Value="{Binding AutoCommandInterval,UpdateSourceTrigger=PropertyChanged}"  Minimum="20" Maximum="100" IsSnapToTickEnabled="True" Width="240" Height="42" Canvas.Left="-3" LargeChange="20" SmallChange="20" TickFrequency="20"/>
                     <Ellipse  Canvas.Left="16.5" Canvas.Top="37" Width="3" Height="3" Fill="Gray" />
                     <TextBlock Style="{DynamicResource TextBlockStyle2}" Text="20ms" FontSize="12" Canvas.Top="39" Canvas.Left="6"/>
                     <Ellipse  Canvas.Left="64.5" Canvas.Top="37" Width="3" Height="3" Fill="Gray" />
@@ -280,14 +279,8 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </WhiteGold:WG_ListBox>
-            <MyControl:UcTextBlock
-                Style="{StaticResource TextBlockStyle1}"
-                Text="ID:" 
-                Canvas.Left="625" Canvas.Top="435" />
-            <MyControl:UcTextBlock
-                Style="{StaticResource TextBlockStyle1}"
-                Text="Port:" 
-                Canvas.Left="725" Canvas.Top="434" />
+            <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle1}" Text="ID:" Canvas.Left="625" Canvas.Top="435" />
+            <MyControl:UcTextBlock Style="{StaticResource TextBlockStyle1}" Text="Port:" Canvas.Left="725" Canvas.Top="434" />
             <MyControl:UcTextBox 
                 IsEnabled="{Binding IsPortOpen}"
                 Text="{Binding ID,Converter={StaticResource HexStringToByteConverter}}"
@@ -309,13 +302,7 @@
                 <Path Width="18" Height="18" Stretch="Fill" Fill="#FF0075FF" 
                       Data="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M15,18V16H6V18H15M18,14V12H6V14H18Z" StrokeThickness="0" />
             </MyControl:UcGlassButton>
-            <MyControl:UcGlassButton 
-                ToolTip="minimize"
-                Foreground="#FF0093FF"
-                Width="50" Height="50"  
-                Canvas.Left="892" Margin="0" 
-                Canvas.Top="475"
-                Command="{Binding Minimize}">
+            <MyControl:UcGlassButton ToolTip="minimize" Foreground="#FF0093FF" Width="50" Height="50" Canvas.Left="892" Margin="0" Canvas.Top="475" Command="{Binding Minimize}">
                 <Path Width="18" Height="18" Stretch="Fill" Fill="#FF0075FF" Data="M21,14H3V4H21M21,2H3C1.89,2 1,2.89 1,4V16A2,2 0 0,0 3,18H10L8,21V22H16V21L14,18H21A2,2 0 0,0 23,16V4C23,2.89 22.1,2 21,2Z" StrokeThickness="0" />
             </MyControl:UcGlassButton>
             <MyControl:UcGlassButton ToolTip="export file as csv" Command="{Binding ExportCsvFile}" Foreground="#FF0093FF" Width="50" Height="50" Canvas.Left="892" Margin="0"  Canvas.Top="405">
@@ -323,7 +310,7 @@
             </MyControl:UcGlassButton>
             <MyControl:UcGlassButton 
                ToolTip="refresh port status"
-                Command="{Binding TEST}"
+                Command="{Binding Refresh}"
                 Foreground="#FF0093FF"
                 Width="50" Height="50"  
                 Canvas.Left="892" Margin="0" 

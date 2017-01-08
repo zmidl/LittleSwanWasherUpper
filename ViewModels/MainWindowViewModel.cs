@@ -13,10 +13,10 @@ namespace Demo.ViewModels
 {
 	public class MainWindowViewModel : ViewModel
 	{
+		#region 测试用--字段与属性
 		private int TEST_INDEX = 0;
 		public RelayCommand TEST { get; private set; }
-
-
+		#endregion
 
 		#region 私有字段
 		/// <summary>
@@ -87,6 +87,15 @@ namespace Demo.ViewModels
 		public string OOB { get; set; }
 		#endregion
 
+		#region 属性--其他
+		private int _AutoCommandInterval;
+		public int AutoCommandInterval
+		{
+			get { return _AutoCommandInterval; }
+			set { _AutoCommandInterval = value;this.RaisePropertyChanged(nameof(this.AutoCommandInterval)); }
+		}
+
+
 		private ObservableCollection<WorkingData> _WorkingDatas = new ObservableCollection<WorkingData>();
 		public ObservableCollection<WorkingData> WorkingDatas
 		{
@@ -100,7 +109,6 @@ namespace Demo.ViewModels
 			set { _DataPacketLogs = value; }
 		}
 
-		#region 属性--其他
 		public System.Windows.WindowState MainWindowState { get; set; }
 
 		private bool _IsMasterModel;
@@ -498,10 +506,12 @@ namespace Demo.ViewModels
 		public RelayCommand ManualCommandOobAndDoobLimitSet { get; private set; }
 		#endregion
 
+		#region 事件句柄
 		public event EventHandler<NotifyUIRaiseDataArgs> NotifyUIRaiseData;
-
 		public event EventHandler NotifyUIContinueAutoCommand;
+		#endregion
 
+		#region 方法
 		/// <summary>
 		/// 业务类构造函数
 		/// </summary>
@@ -537,10 +547,28 @@ namespace Demo.ViewModels
 		}
 
 		/// <summary>
+		/// 测试用--函数
+		/// </summary>
+		private void TEST_ACTION()
+		{
+
+			if (++this.TEST_INDEX > 6) this.TEST_INDEX = 0;
+
+
+			this._ManualCommandActions[this.TEST_INDEX]();
+			//for (int i = 0; i < 10000; i++)
+			//{
+			//	this.WorkingDatas.Add(new WorkingData(11, 22, 333, 4444, 55555, (ushort)i));
+			//}
+
+		}
+
+		/// <summary>
 		/// 初始化业务
 		/// </summary>
 		private void InitializeApplication()
 		{
+			this._AutoCommandInterval = GeneralMethods.AutoCommandDefaultInterval;
 			this.TempM = GeneralMethods.ColumnNames[0];
 			this.TempIPM = GeneralMethods.ColumnNames[1];
 			this.FaultCode = GeneralMethods.ColumnNames[2];
@@ -556,23 +584,11 @@ namespace Demo.ViewModels
 			this._FeedbackTimeOut = 0;
 			this._RetryStatus = RetryStatus.Recover;
 			this.IsMasterModel = false;
+
+			// 测试用-默认ping数据
 			this.ID = 0x01;
 			this.PlatformMessage = 0x15;
 			this.MotorNumber = 0x01;
-		}
-
-		private void TEST_ACTION()
-		{
-			
-			if (++this.TEST_INDEX > 6) this.TEST_INDEX = 0;
-
-			
-			this._ManualCommandActions[this.TEST_INDEX]();
-			//for (int i = 0; i < 10000; i++)
-			//{
-			//	this.WorkingDatas.Add(new WorkingData(11, 22, 333, 4444, 55555, (ushort)i));
-			//}
-
 		}
 
 		/// <summary>
@@ -733,13 +749,13 @@ namespace Demo.ViewModels
 			{
 				case RetryStatus.RePing:
 				{
-					Thread.Sleep(GeneralMethods.AutoCommandInterval);
+					Thread.Sleep(this._AutoCommandInterval);
 					this.TransmitDataPacket(Command.Ping);
 					break;
 				}
 				case RetryStatus.Retransmission:
 				{
-					Thread.Sleep(GeneralMethods.AutoCommandInterval);
+					Thread.Sleep(this._AutoCommandInterval);
 					this.TransmitDataPacket(this._CurrentCommand);
 					break;
 				}
@@ -747,7 +763,7 @@ namespace Demo.ViewModels
 				{
 					if (this._IsAutoCommand == true)
 					{
-						Thread.Sleep(GeneralMethods.AutoCommandInterval);
+						Thread.Sleep(this._AutoCommandInterval);
 						this.TransmitDataPacket(this._CurrentCommand = this.GetPollingCommand());
 					}
 					break;
@@ -1263,6 +1279,10 @@ namespace Demo.ViewModels
 			return result;
 		}
 
+		/// <summary>
+		/// 判断命令是否可以执行,可以与Execute成对使用
+		/// </summary>
+		/// <returns></returns>
 		private bool CanExecuteManualCommand()
 		{
 			bool result = false;
@@ -1270,6 +1290,9 @@ namespace Demo.ViewModels
 			return result;
 		}
 
+		/// <summary>
+		/// 刷新CanExecute
+		/// </summary>
 		private void RaiseAllCanExecuteManualCommandChanged()
 		{
 			this.ManualCommandPing.RaiseCanExecuteChanged();
@@ -1281,5 +1304,6 @@ namespace Demo.ViewModels
 			this.ManualCommandFctPing.RaiseCanExecuteChanged();
 			this.ManualCommandOobAndDoobLimitSet.RaiseCanExecuteChanged();
 		}
+		#endregion
 	}
 }

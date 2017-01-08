@@ -15,7 +15,7 @@ namespace Demo.ViewModels
 
 		public const string Watch = "WATCH";
 
-		public const int AutoCommandInterval = 20;
+		public const int AutoCommandDefaultInterval = 20;
 
 		public const int FeedbackTimeOut = 10;
 
