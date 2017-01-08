@@ -29,12 +29,12 @@ namespace Demo.Models
 				}
 				case CommunicationMark.Unknow:
 				{
-					this.Label = "⇔"; this.Color = new SolidColorBrush(Colors.Brown);
+					this.Label = "⇔"; this.Color = new SolidColorBrush(Colors.RosyBrown);
 					break;
 				}
 				case CommunicationMark.FeedbackError:
 				{
-					this.Label = "⇍"; this.Color = new SolidColorBrush(Colors.Red);
+					this.Label = "╳"; this.Color = new SolidColorBrush(Colors.Red);
 					break;
 				}
 				case CommunicationMark.NoFeedback:

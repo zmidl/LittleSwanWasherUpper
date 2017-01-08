@@ -323,7 +323,7 @@
             </MyControl:UcGlassButton>
             <MyControl:UcGlassButton 
                ToolTip="refresh port status"
-                Command="{Binding Refresh}"
+                Command="{Binding TEST}"
                 Foreground="#FF0093FF"
                 Width="50" Height="50"  
                 Canvas.Left="892" Margin="0" 

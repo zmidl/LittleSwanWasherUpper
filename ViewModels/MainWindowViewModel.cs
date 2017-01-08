@@ -7,14 +7,16 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Threading;
 
 namespace Demo.ViewModels
 {
 	public class MainWindowViewModel : ViewModel
 	{
+		private int TEST_INDEX = 0;
+		public RelayCommand TEST { get; private set; }
+
+
 
 		#region 私有字段
 		/// <summary>
@@ -45,7 +47,12 @@ namespace Demo.ViewModels
 		/// <summary>
 		/// 通信超时计时器
 		/// </summary>
-		System.Timers.Timer _Timer;
+		private System.Timers.Timer _Timer;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private Action[] _ManualCommandActions;
 		#endregion
 
 		#region 字符串
@@ -102,7 +109,11 @@ namespace Demo.ViewModels
 			get { return _IsMasterModel; }
 			set
 			{
-				if (value == false) this.IsAutoCommand = false;
+				if (value == false)
+				{
+					this.IsAutoCommand = false;
+					if (this._MySerialPort != null) this._MySerialPort.ReceivedBytesThreshold = GeneralMethods.FixedLength;
+				}
 				_IsMasterModel = value;
 				this.RaisePropertyChanged(nameof(this.IsMasterModel));
 				this.RaisePropertyChanged(nameof(this.ModeSwitchStatus));
@@ -471,7 +482,7 @@ namespace Demo.ViewModels
 		#endregion
 
 		#region 命令--业务方法
-		public RelayCommand TEST { get; private set; }
+
 		public RelayCommand Minimize { get; private set; }
 		public RelayCommand Refresh { get; private set; }
 		public RelayCommand ExitAPP { get; private set; }
@@ -496,20 +507,31 @@ namespace Demo.ViewModels
 		/// </summary>
 		public MainWindowViewModel()
 		{
-			this.TEST = new RelayCommand(this.ExecuteTEST);
+			this._ManualCommandActions = new Action[]
+			{
+				()=> { this.TransmitDataPacket(this._CurrentCommand = Command.Ping); },
+				() => { this.TransmitDataPacket(this._CurrentCommand = Command.Request); },
+				() => { this.TransmitDataPacket(this._CurrentCommand = Command.LoadEnable); },
+				() => { this.TransmitDataPacket(this._CurrentCommand = Command.FctTest); },
+				() => { this.TransmitDataPacket(this._CurrentCommand = Command.SpeedSet); },
+				() => { this.TransmitDataPacket(this._CurrentCommand = Command.MotorTemperatureCorrection); },
+				() => { this.TransmitDataPacket(this._CurrentCommand = Command.FctPing); },
+				() => { this.TransmitDataPacket(this._CurrentCommand = Command.OobAndDoobLimitSet); }
+			};
+			this.TEST = new RelayCommand(this.TEST_ACTION);
 			this.Minimize = new RelayCommand(ExecuteMinimize);
 			this.ExportCsvFile = new RelayCommand(this.ExecuteExportCsvFile);
 			this.ExportTxtFile = new RelayCommand(this.ExecuteExportTxtFile);
 			this.Refresh = new RelayCommand(() => { this.RaisePropertyChanged(nameof(this.SerialPortNames)); });
 			this.ExitAPP = new RelayCommand(() => { System.Environment.Exit(0); });
-			this.ManualCommandPing = new RelayCommand(()=> { this.TransmitDataPacket(this._CurrentCommand = Command.Ping); },this.CanExecuteManualCommand);
-			this.ManualCommandRequest = new RelayCommand(() => { this.TransmitDataPacket(this._CurrentCommand = Command.Request); },this.CanExecuteManualCommand);
-			this.ManualCommandLoadEnable = new RelayCommand(() => { this.TransmitDataPacket(this._CurrentCommand = Command.LoadEnable); }, this.CanExecuteManualCommand);
-			this.ManualCommandFctTest = new RelayCommand(() => { this.TransmitDataPacket(this._CurrentCommand = Command.FctTest); }, this.CanExecuteManualCommand);
-			this.ManualCommandSpeedSet = new RelayCommand(() => { this.TransmitDataPacket(this._CurrentCommand = Command.SpeedSet); }, this.CanExecuteManualCommand);
-			this.ManualCommandMotorTemperatureCorrection = new RelayCommand(() => { this.TransmitDataPacket(this._CurrentCommand = Command.MotorTemperatureCorrection); }, this.CanExecuteManualCommand);
-			this.ManualCommandFctPing = new RelayCommand(() => { this.TransmitDataPacket(this._CurrentCommand = Command.FctPing); }, this.CanExecuteManualCommand);
-			this.ManualCommandOobAndDoobLimitSet = new RelayCommand(() => { this.TransmitDataPacket(this._CurrentCommand = Command.OobAndDoobLimitSet); }, this.CanExecuteManualCommand);
+			this.ManualCommandPing = new RelayCommand(this._ManualCommandActions[0], this.CanExecuteManualCommand);
+			this.ManualCommandRequest = new RelayCommand(this._ManualCommandActions[1], this.CanExecuteManualCommand);
+			this.ManualCommandLoadEnable = new RelayCommand(this._ManualCommandActions[2], this.CanExecuteManualCommand);
+			this.ManualCommandFctTest = new RelayCommand(this._ManualCommandActions[3], this.CanExecuteManualCommand);
+			this.ManualCommandSpeedSet = new RelayCommand(this._ManualCommandActions[4], this.CanExecuteManualCommand);
+			this.ManualCommandMotorTemperatureCorrection = new RelayCommand(this._ManualCommandActions[5], this.CanExecuteManualCommand);
+			this.ManualCommandFctPing = new RelayCommand(this._ManualCommandActions[6], this.CanExecuteManualCommand);
+			this.ManualCommandOobAndDoobLimitSet = new RelayCommand(this._ManualCommandActions[7], this.CanExecuteManualCommand);
 			this.InitializeAutoCommand();
 			this.InitializeApplication();
 		}
@@ -539,13 +561,18 @@ namespace Demo.ViewModels
 			this.MotorNumber = 0x01;
 		}
 
-		private void ExecuteTEST()
+		private void TEST_ACTION()
 		{
 			
-			for (int i = 0; i < 10000; i++)
-			{
-				this.WorkingDatas.Add(new WorkingData(11, 22, 333, 4444, 55555, (ushort)i));
-			}
+			if (++this.TEST_INDEX > 6) this.TEST_INDEX = 0;
+
+			
+			this._ManualCommandActions[this.TEST_INDEX]();
+			//for (int i = 0; i < 10000; i++)
+			//{
+			//	this.WorkingDatas.Add(new WorkingData(11, 22, 333, 4444, 55555, (ushort)i));
+			//}
+
 		}
 
 		/// <summary>
@@ -738,7 +765,7 @@ namespace Demo.ViewModels
 			{
 				this._IsPortListening = true;
 
-				if(this.IsMasterModel==false)Thread.Sleep(80);
+				if (this.IsMasterModel == false) Thread.Sleep(70);
 
 				byte[] buffer = new byte[this._MySerialPort.BytesToRead];
 
@@ -746,18 +773,97 @@ namespace Demo.ViewModels
 
 				this._MySerialPort.DiscardInBuffer();
 
-				if (this.CheckReceivedDataPacket(buffer) == true)
+				if (this.IsMasterModel == true)
 				{
-					if (buffer[0].Equals(0xB2) && buffer[2].Equals(0xA8) && buffer[3].Equals(0x01)) buffer = buffer.Take(7).ToArray();
+					if (this.CheckReceivedDataPacket(buffer) == true)
+					{
+						if (buffer[0].Equals(0xB2) && buffer[2].Equals(0xA8) && buffer[3].Equals(0x01)) buffer = buffer.Take(7).ToArray();
+						this.SetFeedbackSuccess();
+						this.NotifyUIRaiseData(this, new NotifyUIRaiseDataArgs(buffer, CommunicationMark.Slave));
+						if (this._RetryStatus == RetryStatus.RePing) this._RetryStatus = RetryStatus.Retransmission;
+						else if (this._RetryStatus == RetryStatus.Retransmission) this._RetryStatus = RetryStatus.Recover;
+						this.NotifyUIContinueAutoCommand(this, null);
+					}
+				}
+				else
+				{
 					this.SetFeedbackSuccess();
-					this.NotifyUIRaiseData(this, new NotifyUIRaiseDataArgs(buffer, CommunicationMark.Slave));
-					if (this._RetryStatus == RetryStatus.RePing) this._RetryStatus = RetryStatus.Retransmission;
-					else if (this._RetryStatus == RetryStatus.Retransmission) this._RetryStatus = RetryStatus.Recover;
-					this.NotifyUIContinueAutoCommand(this, null);
+
+					var mark = CommunicationMark.Unknow;
+					if (buffer.Length < GeneralMethods.FixedLength) mark = CommunicationMark.FeedbackError;
+					else if (this.CheckReceivedDataPacket(buffer) == false) mark = CommunicationMark.FeedbackError;
+					else mark = GetMark(buffer);
+					this.NotifyUIRaiseData(this, new NotifyUIRaiseDataArgs(buffer, mark));
 				}
 				this._IsPortListening = false;
 				this.RaisePropertyChanged(nameof(this._IsPortListening));
 			}
+		}
+
+		/// <summary>
+		/// 通过数据包确认通讯属性标帜
+		/// </summary>
+		/// <param name="bytes"></param>
+		/// <returns></returns>
+		private CommunicationMark GetMark(byte[] bytes)
+		{
+			CommunicationMark result = CommunicationMark.Unknow;
+			switch (bytes[2])
+			{
+				case 0xA1:
+				{
+					if (bytes[3] == 0x03) result = CommunicationMark.Master;
+					else if (bytes[3] == 0x04) result = CommunicationMark.Slave;
+					else result = CommunicationMark.Unknow;
+					break;
+				}
+				case 0xA2:
+				{
+					if (bytes[3] == 0x00) result = CommunicationMark.Master;
+					else if (bytes[3] == 0x0A) result = CommunicationMark.Slave;
+					else result = CommunicationMark.Unknow;
+					break;
+				}
+				case 0xA3:
+				{
+					result = CommunicationMark.Unknow;
+					break;
+				}
+				case 0xA4:
+				{
+					if (bytes[3] == 0x00) result = CommunicationMark.Master;
+					else if (bytes[3] == 0x0D) result = CommunicationMark.Slave;
+					else result = CommunicationMark.Unknow;
+					break;
+				}
+				case 0xA5:
+				{
+					if (bytes[3] == 0x04) result = CommunicationMark.Master;
+					else if (bytes[3] == 0x00) result = CommunicationMark.Slave;
+					else result = CommunicationMark.Unknow;
+					break;
+				}
+				case 0xA6:
+				{
+					result = CommunicationMark.Unknow;
+					break;
+				}
+				case 0xA7:
+				{
+					if (bytes[3] == 0x00) result = CommunicationMark.Master;
+					else if (bytes[3] == 0x02) result = CommunicationMark.Slave;
+					else result = CommunicationMark.Unknow;
+					break;
+				}
+				case 0xA8:
+				{
+					if (bytes[3] == 0x04) result = CommunicationMark.Master;
+					else if (bytes[3] == 0x01) result = CommunicationMark.Slave;
+					else result = CommunicationMark.Unknow;
+					break;
+				}
+			}
+			return result;
 		}
 
 		/// <summary>
@@ -1160,7 +1266,7 @@ namespace Demo.ViewModels
 		private bool CanExecuteManualCommand()
 		{
 			bool result = false;
-			if (this.IsPortOpen == true && this.IsAutoCommand == false && this.IsMasterModel==true) result = true;
+			if (this.IsPortOpen == true && this.IsAutoCommand == false && this.IsMasterModel == true) result = true;
 			return result;
 		}
 
