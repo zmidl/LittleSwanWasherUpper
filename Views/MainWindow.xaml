@@ -352,11 +352,11 @@
             	ItemsSource="{Binding SerialPortNames, UpdateSourceTrigger=PropertyChanged}" 
             	SelectedItem="{Binding SelectedPortName, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
             	Canvas.Left="783" 
-            	Canvas.Top="429" >
+            	Canvas.Top="429" FontWeight="Bold" >
                 <MyControl:UcComboBox.Foreground>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FFC3AA0B" Offset="1"/>
-                        <GradientStop Color="#FF5F4D04"/>
+                        <GradientStop Color="#FF002B81" Offset="1"/>
+                        <GradientStop Color="#FF0052F7"/>
                     </LinearGradientBrush>
                 </MyControl:UcComboBox.Foreground>
             </MyControl:UcComboBox>

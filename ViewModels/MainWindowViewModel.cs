@@ -635,23 +635,30 @@ namespace Demo.ViewModels
 		/// <param name="message"></param>
 		public void RaiseNewDataToUI(CommunicationMark mark, byte[] bytes = null, string message = null)
 		{
-			if (mark == CommunicationMark.Slave)
+			try
 			{
-				if (bytes[2] == 0xA2 && bytes[3] == 0x0A)
+				if (mark == CommunicationMark.Slave)
 				{
-					WorkingData data = new WorkingData
-						(bytes[4],
-						 bytes[5],
-						 (ushort)((bytes[6] << 8) + bytes[7]),
-						 (ushort)((bytes[8] << 8) + bytes[9]),
-						 (ushort)((bytes[10] << 8) + bytes[11]),
-						 (ushort)((bytes[12] << 8) + bytes[13]));
-					this.WorkingDatas.Add(data);
+					if (bytes[2] == 0xA2 && bytes[3] == 0x0A)
+					{
+						WorkingData data = new WorkingData
+							(bytes[4],
+							 bytes[5],
+							 (ushort)((bytes[6] << 8) + bytes[7]),
+							 (ushort)((bytes[8] << 8) + bytes[9]),
+							 (ushort)((bytes[10] << 8) + bytes[11]),
+							 (ushort)((bytes[12] << 8) + bytes[13]));
+						this.WorkingDatas.Add(data);
+					}
 				}
-			}
 
-			if (bytes != null) this.LogCommunicationData(bytes, mark);
-			if (message != null) this.LogCommunicationData(message, mark);
+				if (bytes != null) this.LogCommunicationData(bytes, mark);
+				if (message != null) this.LogCommunicationData(message, mark);
+			}
+			catch
+			{
+
+			}
 		}
 
 		/// <summary>
